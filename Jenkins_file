@@ -31,6 +31,19 @@ pipeline {
                 }
             }
         }
+
+        stage('Quality Gate Check') {
+            steps {
+                script {
+                    timeout(time: 3, unit: 'MINUTES') {  // Set a timeout of 3 minutes for Quality Gate check
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            error "❌ Pipeline failed due to SonarQube Quality Gate"
+                        }
+                    }
+                }
+            }
+        }
     }
 
     post {
